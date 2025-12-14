@@ -1,0 +1,80 @@
+version: "3.8"
+
+services:
+
+  eureka-server:
+    build: ./service-registry
+    container_name: eureka-server
+    ports:
+      - "8761:8761"
+    environment:
+      - SERVICE_PORT=8761
+    volumes:
+      - ./logs/service-registry:/var/log/service
+
+  config-server:
+    build: ./config-server
+    container_name: config-server
+    ports:
+      - "8888:8888"
+    environment:
+      - SERVICE_PORT=8888
+    depends_on:
+      - eureka-server
+    volumes:
+      - ./logs/config-server:/var/log/service
+
+  api-gateway:
+    build: ./api-gateway
+    container_name: api-gateway
+    ports:
+      - "8080:8080"
+    environment:
+      - SERVICE_PORT=8080
+      - jwt.secret=ThisIsASecretKeyForJwtTokenAndMustBeLong123456
+    depends_on:
+      - eureka-server
+      - config-server
+    volumes:
+      - ./logs/api-gateway:/var/log/service
+
+  flight-service:
+    build: ./flight-service
+    container_name: flight-service
+    ports:
+      - "8081:8081"
+    environment:
+      - SERVICE_PORT=8081
+    depends_on:
+      - eureka-server
+    volumes:
+      - ./logs/flight-service:/var/log/service
+
+  booking-service:
+    build: ./booking-service
+    container_name: booking-service
+    ports:
+      - "8082:8082"
+    environment:
+      - SERVICE_PORT=8082
+    depends_on:
+      - eureka-server
+      - flight-service
+    volumes:
+      - ./logs/booking-service:/var/log/service
+
+  notification-service:
+    build: ./notification-service
+    container_name: notification-service
+    ports:
+      - "8083:8083"
+    environment:
+      - SERVICE_PORT=8083
+    depends_on:
+      - eureka-server
+    volumes:
+      - ./logs/notification-service:/var/log/service
+
+volumes:
+  mongo_data:
+
