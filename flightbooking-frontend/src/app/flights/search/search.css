@@ -1,0 +1,16 @@
+.card {
+  border-radius: 10px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+h3 {
+  font-weight: 600;
+}
+
+table {
+  margin-top: 20px;
+}
+
+button {
+  height: 38px;
+}
